@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Resume Analyzer</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="bg-blob blob1"></div>
+  <div class="bg-blob blob2"></div>
+
+  <div class="container">
+    <h1>📄 Resume Analyzer</h1>
+    <p class="subtitle">Analyze a single resume or pick the best candidate from many based on your company's needs.</p>
+
+    <!-- Mode toggle -->
+    <div class="mode-toggle">
+      <button id="modePersonal" class="mode-btn active" type="button">👤 Personal Resume</button>
+      <button id="modeCompany" class="mode-btn" type="button">🏢 Company / Hiring</button>
+    </div>
+
+    <!-- ============ PERSONAL MODE ============ -->
+    <div id="personalView">
+
+      <div class="upload-box" id="dropArea">
+        <input type="file" id="fileInput" accept=".pdf,.txt,.png,.jpg,.jpeg" hidden>
+        <div id="uploadContent">
+          <div class="upload-icon">⬆️</div>
+          <p><strong>Click to upload</strong> or drag & drop</p>
+          <span class="file-hint">PDF, TXT, or Image (PNG/JPG)</span>
+        </div>
+        <p id="fileName" class="file-name"></p>
+      </div>
+
+      <p id="imageWarning" class="image-warning hidden">
+        ⚠️ Image resumes with multiple columns or fancy layouts may reduce text-reading accuracy.
+        For best results, upload a text-based PDF instead of an image.
+      </p>
+
+      <button id="analyzeBtn" disabled>Analyze Resume</button>
+
+      <div id="loader" class="loader hidden">
+        <div class="spinner"></div>
+        <p id="loaderText">Analyzing your resume...</p>
+        <div class="progress-bar-track">
+          <div class="progress-bar-fill" id="progressFill"></div>
+        </div>
+        <span class="progress-percent" id="progressPercent">0%</span>
+      </div>
+
+      <div id="results" class="results hidden">
+        <div class="score-section">
+          <div class="score-circle" id="scoreCircle">
+            <span id="scoreValue">0</span>
+          </div>
+          <p class="score-label" id="scoreLabel">Resume Score</p>
+        </div>
+
+        <div class="details">
+          <h2>✅ What's Good</h2>
+          <ul id="goodList" class="good-list"></ul>
+
+          <h2>🛠️ Suggestions to Improve</h2>
+          <ul id="suggestionList" class="suggestion-list"></ul>
+        </div>
+
+        <details class="debug-box">
+          <summary>🔍 View extracted text (debug)</summary>
+          <pre id="rawTextOutput"></pre>
+        </details>
+      </div>
+    </div>
+
+    <!-- ============ COMPANY MODE ============ -->
+    <div id="companyMode" class="hidden">
+
+      <div class="upload-box" id="multiDropArea">
+        <input type="file" id="multiFileInput" accept=".pdf,.txt,.png,.jpg,.jpeg" multiple hidden>
+        <div id="multiUploadContent">
+          <div class="upload-icon">📁</div>
+          <p><strong>Upload multiple resumes</strong> or drag & drop them here</p>
+          <span class="file-hint">You can select 2, 3, or as many as you want</span>
+        </div>
+        <p id="multiFileName" class="file-name"></p>
+        <ul id="fileList" class="file-list"></ul>
+      </div>
+
+      <div class="req-box">
+        <label for="requirementsInput">Company Requirement / Job Requirements</label>
+        <textarea id="requirementsInput" rows="5"
+          placeholder="Type the skills your company needs, one per line or separated by commas. Add a minimum experience if you want.
+e.g.
+Python
+Django
+SQL
+Machine Learning
+3 years"></textarea>
+        <p class="req-hint">Tip: add a line like "Minimum experience: 2 years" to include experience in the ranking.</p>
+      </div>
+
+      <button id="rankBtn" disabled>Rank Resumes 🏆</button>
+
+      <div id="companyLoader" class="loader hidden">
+        <div class="spinner"></div>
+        <p id="companyLoaderText">Processing resumes...</p>
+        <div class="progress-bar-track">
+          <div class="progress-bar-fill" id="companyProgressFill"></div>
+        </div>
+        <span class="progress-percent" id="companyProgressPercent">0%</span>
+      </div>
+
+      <div id="leaderboard" class="leaderboard hidden">
+        <h2 class="lb-title">🏆 Best Match Ranking</h2>
+        <p class="lb-sub">Ranked by overall score (resume quality + how well it matches your requirements).</p>
+        <div id="rankList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- pdf.js for reading PDF text -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <!-- tesseract.js for OCR on images -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/4.1.1/tesseract.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
